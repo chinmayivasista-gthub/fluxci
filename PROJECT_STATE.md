@@ -48,10 +48,10 @@ Analysis
 
 ProcessingJob
 
-* id
-* job_id
-* status
-* created_at
+* id✅
+* job_id✅
+* status✅
+* created_at✅
 
 Status: IN PROGRESS
 
@@ -195,20 +195,20 @@ Status: NOT STARTED
 
 Current Work
 
-Current Milestone:
+CCurrent Milestone:
 M2 - Database Layer
 
 Current Task:
-Build ProcessingJob model and complete the database layer
+Build Repository (CRUD) layer
 
 Current File:
-backend/app/models/
+backend/app/repositories/
 
 Current Blocker:
 None
 
 Next Step:
-Finish M2 Database Layer
+Implement database access layer
 
 ⸻
 

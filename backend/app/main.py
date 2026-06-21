@@ -5,6 +5,7 @@ from app.database.database import engine
 
 # Import models so SQLAlchemy can discover them
 from app.models.analysis import Analysis
+from app.models.processing_job import ProcessingJob
 
 Base.metadata.create_all(bind=engine)
 
