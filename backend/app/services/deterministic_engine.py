@@ -4,6 +4,8 @@ from app.rules.docker_rules import DockerRules
 from app.rules.compiler_rules import CompilerRules
 
 from app.schemas.rule_result import RuleResult
+from app.rules.test_rules import TestRules
+from app.rules.lint_rules import LintRules
 
 
 class DeterministicEngine:
