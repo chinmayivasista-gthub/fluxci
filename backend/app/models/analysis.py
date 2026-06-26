@@ -23,4 +23,10 @@ class Analysis(Base):
     created_at = Column(
         DateTime,
         default=datetime.utcnow
+        
+    )
+    job_id = Column(
+         String,
+         unique=True,
+         nullable=False,
     )

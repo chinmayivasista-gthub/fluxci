@@ -6,7 +6,7 @@ from app.database.database import engine
 # Import models so SQLAlchemy can discover them
 from app.models.analysis import Analysis
 from app.models.processing_job import ProcessingJob
-from app.api.analysis import router as analysis_router
+from app.api.analysis_routes import router as analysis_router
 
 
 Base.metadata.create_all(bind=engine)

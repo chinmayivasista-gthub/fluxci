@@ -10,13 +10,32 @@ class AnalysisRepository:
         db.add(analysis)
         db.commit()
         db.refresh(analysis)
+
         return analysis
 
     @staticmethod
-    def get_by_id(db: Session, analysis_id: int):
+    def get_by_id(
+        db: Session,
+        analysis_id: int,
+    ):
         return (
             db.query(Analysis)
-            .filter(Analysis.id == analysis_id)
+            .filter(
+                Analysis.id == analysis_id
+            )
+            .first()
+        )
+
+    @staticmethod
+    def get_by_job_id(
+        db: Session,
+        job_id: str,
+    ):
+        return (
+            db.query(Analysis)
+            .filter(
+                Analysis.job_id == job_id
+            )
             .first()
         )
 
@@ -24,6 +43,8 @@ class AnalysisRepository:
     def get_all(db: Session):
         return (
             db.query(Analysis)
-            .order_by(Analysis.created_at.desc())
+            .order_by(
+                Analysis.created_at.desc()
+            )
             .all()
         )
