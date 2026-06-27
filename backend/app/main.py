@@ -2,6 +2,9 @@ from fastapi import FastAPI
 
 from app.database.base import Base
 from app.database.database import engine
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Import models so SQLAlchemy can discover them
 from app.models.analysis import Analysis

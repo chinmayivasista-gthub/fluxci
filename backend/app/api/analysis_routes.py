@@ -1,12 +1,33 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    HTTPException,
+)
 from sqlalchemy.orm import Session
 
-from app.database.database import SessionLocal, get_db
-from app.repositories.analysis_repository import AnalysisRepository
+from app.database.database import (
+    SessionLocal,
+    get_db,
+)
+
+from app.repositories.analysis_repository import (
+    AnalysisRepository,
+)
 from app.repositories.processing_job_repository import (
     ProcessingJobRepository,
 )
-from app.services.analysis_service import AnalysisService
+
+from app.schemas.analysis_response import (
+    AnalysisResponse,
+)
+from app.schemas.job_response import (
+    JobResponse,
+)
+
+from app.services.analysis_service import (
+    AnalysisService,
+)
 
 router = APIRouter()
 
@@ -53,7 +74,10 @@ def analyze_log(
     }
 
 
-@router.get("/jobs/{job_id}")
+@router.get(
+    "/jobs/{job_id}",
+    response_model=JobResponse,
+)
 def get_job_status(
     job_id: str,
     db: Session = Depends(get_db),
@@ -74,8 +98,20 @@ def get_job_status(
         job_id,
     )
 
-    return {
-        "job_id": job.job_id,
-        "status": job.status,
-        "analysis": analysis,
-    }
+    analysis_response = None
+
+    if analysis:
+        analysis_response = AnalysisResponse(
+            error_type=analysis.error_type,
+            root_cause=analysis.root_cause,
+            explanation=analysis.explanation,
+            fix_suggestion=analysis.fix_suggestion,
+            fix_command=analysis.fix_command,
+            analysis_source=analysis.analysis_source,
+        )
+
+    return JobResponse(
+        job_id=job.job_id,
+        status=job.status,
+        analysis=analysis_response,
+    )

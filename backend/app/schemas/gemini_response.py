@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class AnalysisResponse(BaseModel):
+class GeminiResponse(BaseModel):
 
     error_type: str
 
@@ -12,5 +12,3 @@ class AnalysisResponse(BaseModel):
     fix_suggestion: str
 
     fix_command: str
-
-    analysis_source: str
