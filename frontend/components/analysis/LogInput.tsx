@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import api from "@/lib/api";
+import {
+  AlertTriangle,
+  Search,
+  BookOpen,
+  Wrench,
+  Terminal,
+  Bot,
+  CheckCircle2,
+} from "lucide-react";
 
 interface Analysis {
   error_type: string;
@@ -91,7 +100,7 @@ export default function LogInput() {
         disabled={loading}
         onChange={(e) => setLog(e.target.value)}
         placeholder="Paste your CI/CD log here..."
-        className="h-96 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-sm outline-none focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+       className="h-96 w-full resize-none rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 text-sm outline-none backdrop-blur transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 disabled:cursor-not-allowed disabled:opacity-60"
       />
 
       <button
@@ -138,11 +147,9 @@ export default function LogInput() {
       )}
 
       {analysis && (
-        <div className="space-y-5 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <div className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-xl backdrop-blur">
           <div>
-            <p className="text-xs uppercase tracking-widest text-zinc-500">
-              Error Type
-            </p>
+             Error Type
 
             <h2 className="mt-1 text-xl font-semibold">
               {analysis.error_type}
@@ -150,19 +157,24 @@ export default function LogInput() {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-zinc-500">
-              Root Cause
-            </p>
-
+            <div className="flex items-center gap-2 text-zinc-500">
+                <Search size={16} />
+                <p className="text-xs uppercase tracking-widest">
+                    Root Cause
+                </p>
+                </div>
             <p className="mt-1 text-zinc-300">
               {analysis.root_cause}
             </p>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-zinc-500">
-              Explanation
-            </p>
+            <div className="flex items-center gap-2 text-zinc-500">
+                <BookOpen size={16} />
+                <p className="text-xs uppercase tracking-widest">
+                    Explanation
+                </p>
+                </div>
 
             <p className="mt-1 text-zinc-300">
               {analysis.explanation}
@@ -170,9 +182,12 @@ export default function LogInput() {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-zinc-500">
-              Fix Suggestion
-            </p>
+            <div className="flex items-center gap-2 text-zinc-500">
+                <Wrench size={16} />
+                <p className="text-xs uppercase tracking-widest">
+                    Fix Suggestion
+                </p>
+                </div>
 
             <p className="mt-1 text-zinc-300">
               {analysis.fix_suggestion}
@@ -180,9 +195,12 @@ export default function LogInput() {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-zinc-500">
-              Command
-            </p>
+            <div className="flex items-center gap-2 text-zinc-500">
+                <Terminal size={16} />
+                <p className="text-xs uppercase tracking-widest">
+                    Command
+                </p>
+                </div>
 
             <div className="mt-2 space-y-3">
               <pre className="overflow-x-auto rounded-lg bg-black p-3">
@@ -191,7 +209,7 @@ export default function LogInput() {
 
               <button
                 onClick={copyCommand}
-                className="rounded-md border border-zinc-700 px-3 py-2 text-sm transition hover:bg-zinc-800"
+                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm transition hover:border-zinc-500 hover:bg-zinc-800 active:scale-95"
                 >
                 {copied ? "✅ Copied to Clipboard" : "📋 Copy Command"}
                 </button>
@@ -199,9 +217,17 @@ export default function LogInput() {
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-zinc-500">
-              Analysis Source
+            <div className="flex items-center gap-2 text-zinc-500">
+            {analysis.analysis_source === "deterministic" ? (
+                <CheckCircle2 size={16} />
+            ) : (
+                <Bot size={16} />
+            )}
+
+            <span className="text-sm">
+                Analysis Source
             </span>
+            </div>
 
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -217,7 +243,7 @@ export default function LogInput() {
           <div className="pt-2">
             <button
               onClick={resetAnalysis}
-              className="rounded-lg bg-zinc-800 px-5 py-2 transition hover:bg-zinc-700"
+              className="rounded-xl bg-zinc-800 px-5 py-2.5 font-medium transition hover:bg-zinc-700 active:scale-95"
             >
               New Analysis
             </button>
