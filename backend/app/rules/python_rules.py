@@ -8,14 +8,22 @@ class PythonRules:
     @staticmethod
     def module_not_found(log: str) -> RuleResult:
 
-        pattern = r"ModuleNotFoundError: No module named ['\"](.+?)['\"]"
+        pattern = (
+            r"ModuleNotFoundError\s*:\s*"
+            r"No\s+module\s+named\s*"
+            r"['\"]?(.+?)['\"]?$"
+        )
 
-        match = re.search(pattern, log)
+        match = re.search(
+            pattern,
+            log,
+            re.IGNORECASE,
+        )
 
         if not match:
             return RuleResult(matched=False)
 
-        package = match.group(1)
+        package = match.group(1).strip()
 
         return RuleResult(
             matched=True,
@@ -35,14 +43,18 @@ class PythonRules:
     @staticmethod
     def import_error(log: str) -> RuleResult:
 
-        pattern = r"ImportError: (.+)"
+        pattern = r"ImportError\s*:\s*(.+)"
 
-        match = re.search(pattern, log)
+        match = re.search(
+            pattern,
+            log,
+            re.IGNORECASE,
+        )
 
         if not match:
             return RuleResult(matched=False)
 
-        error = match.group(1)
+        error = match.group(1).strip()
 
         return RuleResult(
             matched=True,
@@ -60,17 +72,21 @@ class PythonRules:
     def pip_dependency_failure(log: str) -> RuleResult:
 
         patterns = [
-            r"Could not find a version that satisfies the requirement (.+)",
-            r"No matching distribution found for (.+)",
+            r"Could\s+not\s+find\s+a\s+version\s+that\s+satisfies\s+the\s+requirement\s+(.+)",
+            r"No\s+matching\s+distribution\s+found\s+for\s+(.+)",
         ]
 
         for pattern in patterns:
 
-            match = re.search(pattern, log)
+            match = re.search(
+                pattern,
+                log,
+                re.IGNORECASE,
+            )
 
             if match:
 
-                package = match.group(1)
+                package = match.group(1).strip()
 
                 return RuleResult(
                     matched=True,

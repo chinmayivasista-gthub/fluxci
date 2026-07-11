@@ -1,3 +1,5 @@
+import { Bot, CheckCircle2 } from "lucide-react";
+
 interface StatusBadgeProps {
   source: string;
 }
@@ -9,19 +11,21 @@ export default function StatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
         deterministic
-          ? "bg-green-500/20 text-green-400 border border-green-500/30"
-          : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+          : "border-blue-500/30 bg-blue-500/10 text-blue-400"
       }`}
     >
-      <span className="text-base">
-        {deterministic ? "🟢" : "🤖"}
-      </span>
+      {deterministic ? (
+        <CheckCircle2 className="h-3.5 w-3.5" />
+      ) : (
+        <Bot className="h-3.5 w-3.5" />
+      )}
 
-      {deterministic
-        ? "Deterministic Engine"
-        : "Gemini AI"}
+      <span>
+        {deterministic ? "Deterministic Engine" : "Gemini AI"}
+      </span>
     </span>
   );
 }

@@ -1,7 +1,13 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class AnalysisResponse(BaseModel):
+
+    id: int
+
+    job_id: str
 
     error_type: str
 
@@ -11,6 +17,11 @@ class AnalysisResponse(BaseModel):
 
     fix_suggestion: str
 
-    fix_command: str
+    fix_command: str | None
 
     analysis_source: str
+
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

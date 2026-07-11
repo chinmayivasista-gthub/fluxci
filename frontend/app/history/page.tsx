@@ -1,19 +1,36 @@
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import Background from "@/components/layout/Background";
 import HistoryTable from "@/components/history/HistoryTable";
 
 export default function HistoryPage() {
   return (
-    <main className="min-h-screen bg-zinc-950 px-8 py-12 text-white">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-5xl font-bold">History</h1>
+    <Background>
+      <Navbar />
 
-        <p className="mt-3 text-zinc-400">
-          Browse previous CI/CD analyses.
-        </p>
+      <main className="page-container min-h-[calc(100vh-64px)] py-8">
+        <section className="workspace-section overflow-hidden">
+          <div className="workspace-header">
+            <div>
+              <p className="muted-label">Investigation Browser</p>
 
-        <div className="mt-10">
-          <HistoryTable />
-        </div>
-      </div>
-    </main>
+              <h1 className="text-2xl font-semibold">
+                Investigation History
+              </h1>
+
+              <p className="mt-2 text-sm text-muted-foreground">
+                Search, browse and inspect previous CI/CD failure analyses.
+              </p>
+            </div>
+          </div>
+
+          <div className="workspace-content">
+            <HistoryTable />
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </Background>
   );
 }

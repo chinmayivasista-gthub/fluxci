@@ -9,4 +9,6 @@ class JobResponse(BaseModel):
 
     status: str
 
+    current_step: str
+
     analysis: AnalysisResponse | None = None

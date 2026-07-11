@@ -1,5 +1,11 @@
-from sqlalchemy import Column, Integer, String, DateTime
 from datetime import datetime
+
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Integer,
+    String,
+)
 
 from app.database.base import Base
 
@@ -7,13 +13,33 @@ from app.database.base import Base
 class ProcessingJob(Base):
     __tablename__ = "processing_jobs"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
 
-    job_id = Column(String, unique=True, nullable=False)
+    job_id = Column(
+        String,
+        unique=True,
+        nullable=False,
+    )
 
-    status = Column(String, nullable=False, default="processing")
+    # Overall job state
+    status = Column(
+        String,
+        nullable=False,
+        default="processing",
+    )
+
+    # Current pipeline stage
+    current_step = Column(
+        String,
+        nullable=False,
+        default="LOG_RECEIVED",
+    )
 
     created_at = Column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
     )

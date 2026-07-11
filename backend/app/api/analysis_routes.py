@@ -102,16 +102,99 @@ def get_job_status(
 
     if analysis:
         analysis_response = AnalysisResponse(
+            id=analysis.id,
+            job_id=analysis.job_id,
             error_type=analysis.error_type,
             root_cause=analysis.root_cause,
             explanation=analysis.explanation,
             fix_suggestion=analysis.fix_suggestion,
             fix_command=analysis.fix_command,
             analysis_source=analysis.analysis_source,
+            created_at=analysis.created_at,
         )
 
     return JobResponse(
-        job_id=job.job_id,
-        status=job.status,
-        analysis=analysis_response,
+    job_id=job.job_id,
+    status=job.status,
+    current_step=job.current_step,
+    analysis=analysis_response,
+)
+
+
+
+@router.get(
+    "/history",
+    response_model=list[AnalysisResponse],
+)
+def get_history(
+    db: Session = Depends(get_db),
+):
+    return AnalysisRepository.get_all(db)
+
+
+@router.get(
+    "/history/search",
+    response_model=list[AnalysisResponse],
+)
+def search_history(
+    q: str,
+    db: Session = Depends(get_db),
+):
+    return AnalysisRepository.search(
+        db,
+        q,
     )
+
+
+@router.get(
+    "/history/{analysis_id}",
+    response_model=AnalysisResponse,
+)
+def get_analysis(
+    analysis_id: int,
+    db: Session = Depends(get_db),
+):
+    analysis = AnalysisRepository.get_by_id(
+        db,
+        analysis_id,
+    )
+
+    if analysis is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Analysis not found.",
+        )
+
+    return analysis
+
+
+@router.delete("/history/{analysis_id}")
+def delete_analysis(
+    analysis_id: int,
+    db: Session = Depends(get_db),
+):
+    deleted = AnalysisRepository.delete_by_id(
+        db,
+        analysis_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Analysis not found.",
+        )
+
+    return {
+        "message": "Analysis deleted successfully."
+    }
+
+
+@router.delete("/history")
+def clear_history(
+    db: Session = Depends(get_db),
+):
+    AnalysisRepository.delete_all(db)
+
+    return {
+        "message": "History cleared successfully."
+    }

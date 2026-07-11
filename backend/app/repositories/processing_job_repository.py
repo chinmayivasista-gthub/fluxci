@@ -44,3 +44,37 @@ class ProcessingJobRepository:
         db.refresh(job)
 
         return job
+
+    @staticmethod
+    def update_current_step(
+        db: Session,
+        job: ProcessingJob,
+        current_step: str,
+    ) -> ProcessingJob:
+
+        job.current_step = current_step
+
+        db.commit()
+        db.refresh(job)
+
+        return job
+
+    @staticmethod
+    def update_progress(
+        db: Session,
+        job: ProcessingJob,
+        *,
+        status: str | None = None,
+        current_step: str | None = None,
+    ) -> ProcessingJob:
+
+        if status is not None:
+            job.status = status
+
+        if current_step is not None:
+            job.current_step = current_step
+
+        db.commit()
+        db.refresh(job)
+
+        return job

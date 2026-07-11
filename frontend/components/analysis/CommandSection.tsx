@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Clipboard, Check } from "lucide-react";
+import {
+  Clipboard,
+  Check,
+  Terminal,
+} from "lucide-react";
 
 interface CommandSectionProps {
   command: string;
@@ -23,33 +27,44 @@ export default function CommandSection({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-          Command
-        </h3>
+    <section className="surface overflow-hidden">
+      <div className="workspace-header">
+        <div className="flex items-center gap-2">
+          <Terminal className="h-4 w-4 text-muted-foreground" />
+
+          <div>
+            <p className="muted-label">Command</p>
+            <h3 className="text-sm font-semibold">
+              Recommended Fix
+            </h3>
+          </div>
+        </div>
 
         <button
           onClick={copyCommand}
-          className="flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm transition hover:border-zinc-500 hover:bg-zinc-800"
+          className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
         >
           {copied ? (
             <>
-              <Check size={16} />
+              <Check className="h-4 w-4 text-emerald-500" />
               Copied
             </>
           ) : (
             <>
-              <Clipboard size={16} />
+              <Clipboard className="h-4 w-4" />
               Copy
             </>
           )}
         </button>
       </div>
 
-      <pre className="overflow-x-auto rounded-xl bg-black/70 p-4 text-sm border border-zinc-800">
-        <code>{command}</code>
-      </pre>
-    </div>
+      <div className="workspace-content">
+        <pre className="overflow-x-auto rounded-xl border bg-black/80 p-4">
+          <code className="mono text-sm">
+            {command}
+          </code>
+        </pre>
+      </div>
+    </section>
   );
 }
