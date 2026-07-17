@@ -9,9 +9,13 @@ class CompilerRules:
     def compilation_failure(log: str) -> RuleResult:
 
         patterns = [
-            r"error: .*",
-            r"fatal error: .*",
-            r"compilation terminated",
+            # GCC / Clang style: file.c:10:5: error: message
+            r"\S+:\d+:\d+:\s*(?:fatal\s+)?error:\s.*",
+            # Rust style: error[E0308]: message
+            r"\berror\[E\d+\]:\s.*",
+            # TypeScript style: file.ts(42,19): error TS2339: message
+            r"\(\d+,\d+\):\s*error\s+TS\d+:\s.*",
+            r"\bcompilation terminated\b",
         ]
 
         for pattern in patterns:
@@ -28,7 +32,8 @@ class CompilerRules:
                     root_cause="Compilation failed.",
                     explanation=message,
                     fix_suggestion=(
-                        "Review the compiler error and correct the source code."
+                        "Review the compiler error and correct "
+                        "the source code."
                     ),
                     fix_command=None,
                 )

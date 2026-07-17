@@ -1,0 +1,27 @@
+This project has no migration tool (no Alembic) - `Base.metadata.create_all()`
+in `main.py` only creates tables that don't exist yet; it will NOT add new
+columns to a table that's already there.
+
+The `Analysis` model just gained two new columns: `stack_trace`, `exit_code`.
+If you already have a `fluxci.db` file from before this change, pick ONE of
+the two options below before running the app again - otherwise the next
+completed analysis will crash with something like:
+    sqlite3.OperationalError: table analyses has no column named stack_trace
+
+OPTION A - fastest, loses existing history
+------------------------------------------
+Just delete the file and let it get recreated fresh on next startup:
+
+    rm fluxci.db
+
+OPTION B - keeps existing history
+----------------------------------
+Run this once against the existing database (requires the sqlite3 CLI,
+which ships with Python):
+
+    sqlite3 fluxci.db "ALTER TABLE analyses ADD COLUMN stack_trace TEXT;"
+    sqlite3 fluxci.db "ALTER TABLE analyses ADD COLUMN exit_code INTEGER;"
+
+Either option only needs to be done once. Fresh clones/deployments with no
+existing fluxci.db are unaffected - create_all() will include the new
+columns automatically since the table doesn't exist yet.

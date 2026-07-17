@@ -18,6 +18,9 @@ from app.services.log_processing_pipeline import (
 from app.services.deterministic_engine import (
     DeterministicEngine,
 )
+from app.services.decision_engine import (
+    DecisionEngine,
+)
 from app.services.gemini_service import (
     GeminiService,
 )
@@ -103,7 +106,11 @@ class AnalysisService:
                 processed.cleaned_log
             )
 
-            if rule_result.matched:
+            classification = DecisionEngine.analyze(
+                rule_result
+            )
+
+            if rule_result.matched and not classification.requires_ai:
 
                 analysis_source = "deterministic"
 

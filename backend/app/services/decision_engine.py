@@ -27,11 +27,21 @@ class DecisionEngine:
                 "contains one or more errors."
             ),
         },
-        "Docker Failure": {
-            "severity": "High",
-            "confidence": 0.90,
+        "GitHub Actions Permission Error": {
+            "severity": "Medium",
+            "confidence": 0.97,
             "recoverable": True,
             "requires_ai": False,
+            "summary": (
+                "The workflow's GITHUB_TOKEN lacks a required "
+                "permission scope for this step."
+            ),
+        },
+        "Docker Failure": {
+            "severity": "High",
+            "confidence": 0.70,
+            "recoverable": True,
+            "requires_ai": True,
             "summary": (
                 "The Docker build or image retrieval process "
                 "failed."
