@@ -17,6 +17,16 @@ class DecisionEngine:
                 "to install."
             ),
         },
+        "Import Error": {
+            "severity": "Medium",
+            "confidence": 0.60,
+            "recoverable": True,
+            "requires_ai": True,
+            "summary": (
+                "A Python import failed for a reason too varied "
+                "to safely resolve with a static rule."
+            ),
+        },
         "Compilation Error": {
             "severity": "High",
             "confidence": 0.80,

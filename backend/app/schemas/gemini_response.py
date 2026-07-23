@@ -49,8 +49,17 @@ class GeminiResponse(BaseModel):
         description=(
             "The exact, ready-to-run terminal command that resolves "
             "the issue (e.g. 'pip install requests', "
-            "'npm install lodash --save'). If no single command can "
-            "fix this and a code change is required instead, return "
-            "'N/A' rather than inventing a command."
+            "'npm install lodash --save'). For recognizable classes "
+            "of failure — dependency version conflicts, corrupted "
+            "installs, compiled-extension/ABI mismatches, stale "
+            "build caches — suggest the standard, well-known "
+            "remediation command engineers actually try first (for "
+            "example 'pip install --force-reinstall <package>' for "
+            "a native-extension symbol mismatch), even if it is not "
+            "a guaranteed fix, since it is still genuinely useful "
+            "advice. Only return 'N/A' when no standard command "
+            "exists at all and the fix is purely a source-code "
+            "change — do not return 'N/A' just because you are not "
+            "100% certain a reasonable command will work."
         )
     )

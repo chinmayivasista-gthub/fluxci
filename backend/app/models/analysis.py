@@ -19,6 +19,7 @@ class Analysis(Base):
 
     fix_suggestion = Column(Text, nullable=True)
     fix_command = Column(Text, nullable=True)
+    exit_code = Column(Integer, nullable=True)
     analysis_source = Column(
     String,
     nullable=False,

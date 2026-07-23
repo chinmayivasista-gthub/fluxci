@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from app.database.base import Base
 from app.database.database import engine
@@ -20,11 +21,15 @@ app = FastAPI(
     title="FluxCI API",
     version="1.0.0"
 )
+
+_origins_env = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+_allowed_origins = [
+    origin.strip() for origin in _origins_env.split(",") if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-    ],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

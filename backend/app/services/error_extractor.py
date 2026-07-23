@@ -12,11 +12,11 @@ class ErrorExtractor:
 
         patterns = [
             r"Traceback[\s\S]*",
-            r"ModuleNotFoundError.*",
-            r"ImportError.*",
-            r"AssertionError.*",
-            r"ERROR.*",
-            r"Exception.*",
+            r"ModuleNotFoundError[\s\S]*",
+            r"ImportError[\s\S]*",
+            r"AssertionError[\s\S]*",
+            r"ERROR[\s\S]*",
+            r"Exception[\s\S]*",
         ]
 
         for pattern in patterns:

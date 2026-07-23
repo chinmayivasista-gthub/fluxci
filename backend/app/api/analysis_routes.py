@@ -18,9 +18,14 @@ from app.repositories.processing_job_repository import (
     ProcessingJobRepository,
 )
 
+from app.schemas.analysis import (
+    AnalysisCreate,
+)
 from app.schemas.analysis_response import (
     AnalysisResponse,
 )
+from app.services.auth import verify_api_key
+from app.services.rate_limiter import enforce_rate_limit
 from app.schemas.job_response import (
     JobResponse,
 )
@@ -56,16 +61,24 @@ def process_analysis(
 
 @router.post("/analyze")
 def analyze_log(
-    log: str,
+    payload: AnalysisCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
+    _auth: None = Depends(verify_api_key),
+    _rate_limit: None = Depends(enforce_rate_limit),
 ):
+    if not payload.log or not payload.log.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Log content cannot be empty.",
+        )
+
     job = AnalysisService.create_job(db)
 
     background_tasks.add_task(
         process_analysis,
         job.job_id,
-        log,
+        payload.log,
     )
 
     return {
@@ -109,6 +122,7 @@ def get_job_status(
             explanation=analysis.explanation,
             fix_suggestion=analysis.fix_suggestion,
             fix_command=analysis.fix_command,
+            exit_code=analysis.exit_code,
             analysis_source=analysis.analysis_source,
             created_at=analysis.created_at,
         )
@@ -172,6 +186,7 @@ def get_analysis(
 def delete_analysis(
     analysis_id: int,
     db: Session = Depends(get_db),
+    _auth: None = Depends(verify_api_key),
 ):
     deleted = AnalysisRepository.delete_by_id(
         db,
@@ -192,6 +207,7 @@ def delete_analysis(
 @router.delete("/history")
 def clear_history(
     db: Session = Depends(get_db),
+    _auth: None = Depends(verify_api_key),
 ):
     AnalysisRepository.delete_all(db)
 

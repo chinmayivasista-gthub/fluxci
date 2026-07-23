@@ -174,6 +174,7 @@ class AnalysisService:
                 analysis_source=analysis_source,
                 fix_suggestion=fix_suggestion,
                 fix_command=fix_command,
+                exit_code=processed.exit_code,
             )
 
             AnalysisRepository.create(

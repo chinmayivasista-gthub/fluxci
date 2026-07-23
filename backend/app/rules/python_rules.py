@@ -58,12 +58,14 @@ class PythonRules:
 
         return RuleResult(
             matched=True,
-            error_type="Dependency Error",
-            root_cause="Python import failed.",
+            error_type="Import Error",
+            root_cause=f"Python import failed: {error}",
             explanation=error,
             fix_suggestion=(
-                "Verify the import statement, package installation, "
-                "and package version compatibility."
+                "This ImportError message varies too much to give a "
+                "single safe fix — it could be a version conflict, "
+                "a compiled-extension mismatch, or a circular "
+                "import. See the specific error above for details."
             ),
             fix_command=None,
         )

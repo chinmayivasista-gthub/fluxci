@@ -74,7 +74,12 @@ Write your answer as if explaining it out loud to that teammate:
 - Be concise. No filler phrases like "it appears that" or "it seems
   like." State what happened directly.
 - Be useful. The fix should be something the person can actually do
-  right now, not generic advice.
+  right now, not generic advice. For a recognizable class of failure
+  (version conflicts, corrupted installs, ABI/compiled-extension
+  mismatches, stale caches), give the standard command engineers
+  actually try first, even if it isn't a 100% guaranteed fix. Only
+  say no command applies when the real fix is a source-code change,
+  not just because you're uncertain.
 - If (and only if) the log is genuinely too short, garbled, or lacks
   any recognizable CI/CD failure signal to analyze, say so plainly in
   root_cause and explanation instead of guessing or inventing details
@@ -89,7 +94,7 @@ CI/CD Log:
         try:
 
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.5-flash-lite",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",

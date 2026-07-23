@@ -38,6 +38,13 @@ class DeterministicEngine:
 
             result = rule(log)
 
+            # Defensive: a rule function that falls through without an
+            # explicit return implicitly returns None in Python. Treat
+            # that the same as "did not match" instead of crashing, so
+            # one broken rule can't take down the whole pipeline.
+            if result is None:
+                continue
+
             if result.matched:
                 matches.append(result)
 

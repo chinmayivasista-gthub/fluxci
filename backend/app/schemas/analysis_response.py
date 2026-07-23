@@ -19,6 +19,8 @@ class AnalysisResponse(BaseModel):
 
     fix_command: str | None
 
+    exit_code: int | None = None
+
     analysis_source: str
 
     created_at: datetime
