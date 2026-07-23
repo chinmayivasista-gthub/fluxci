@@ -81,6 +81,12 @@ export default function HistoryDetails({
                 <Calendar size={16} />
                 {new Date(investigation.created_at).toLocaleString()}
               </div>
+              {investigation.exit_code !== null &&
+                investigation.exit_code !== undefined && (
+                  <div className="flex items-center gap-2">
+                    Exit code: {investigation.exit_code}
+                  </div>
+                )}
             </div>
           </div>
 

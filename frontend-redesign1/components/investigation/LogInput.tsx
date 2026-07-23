@@ -97,9 +97,7 @@ export default function LogInput() {
       setLoading(true);
       setError(null);
 
-      const response = await api.post("/analyze", null, {
-        params: { log },
-      });
+      const response = await api.post("/analyze", { log });
 
       saveJobId(response.data.job_id);
       router.push("/analysis");

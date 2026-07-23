@@ -44,6 +44,7 @@ export default function Navbar() {
                 src="/logo-v2.png"
                 alt="FluxCI Logo"
                 fill
+                sizes="(min-width: 768px) 3.5rem, 2.75rem"
                 className="object-contain"
                 priority
               />

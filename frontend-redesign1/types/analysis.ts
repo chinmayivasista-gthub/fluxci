@@ -6,6 +6,7 @@ export interface Analysis {
   explanation: string;
   fix_suggestion: string;
   fix_command: string;
+  exit_code: number | null;
   analysis_source: string;
   created_at: string;
 }

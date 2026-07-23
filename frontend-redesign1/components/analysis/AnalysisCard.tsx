@@ -6,6 +6,7 @@ import {
   Bot,
   Check,
   Copy,
+  Download,
   FileSearch,
   ShieldAlert,
   Terminal,
@@ -34,6 +35,59 @@ export default function AnalysisCard({ analysis, status, failed }: Props) {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  function downloadAnalysis() {
+    if (!analysis) return;
+
+    const timestamp = new Date(analysis.created_at || Date.now());
+
+    const lines = [
+      "FluxCI Diagnostic Report",
+      "========================",
+      "",
+      `Error Type:        ${analysis.error_type ?? "Not available."}`,
+      `Analysis Source:   ${
+        analysis.analysis_source?.toLowerCase() === "gemini"
+          ? "Gemini AI"
+          : "Deterministic Rule"
+      }`,
+      `Exit Code:         ${
+        analysis.exit_code ?? "Not available."
+      }`,
+      `Generated:         ${timestamp.toLocaleString()}`,
+      "",
+      "Root Cause",
+      "----------",
+      analysis.root_cause ?? "Not available.",
+      "",
+      "Explanation",
+      "-----------",
+      analysis.explanation ?? "Not available.",
+      "",
+      "Suggested Fix",
+      "-------------",
+      analysis.fix_suggestion ?? "Not available.",
+      "",
+      "Resolution Command",
+      "-------------------",
+      analysis.fix_command ?? "Not available.",
+      "",
+    ].join("\n");
+
+    const blob = new Blob([lines], {
+      type: "text/plain;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `fluxci-analysis-${analysis.job_id || analysis.id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
   }
 
   /*
@@ -140,8 +194,22 @@ export default function AnalysisCard({ analysis, status, failed }: Props) {
           </div>
         </div>
 
-        <div className="shrink-0">
-          <StatusBadge source={analysis.analysis_source} />
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            <StatusBadge source={analysis.analysis_source} />
+            <button
+              onClick={downloadAnalysis}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-[13px] font-medium text-zinc-400 transition-all duration-200 hover:bg-white/[0.06] hover:text-zinc-200"
+            >
+              <Download size={14} strokeWidth={1.5} />
+              <span>Download</span>
+            </button>
+          </div>
+          {analysis.exit_code !== null && analysis.exit_code !== undefined && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-[11px] font-medium text-zinc-500">
+              Exit code: {analysis.exit_code}
+            </span>
+          )}
         </div>
       </header>
 

@@ -1,12 +1,21 @@
 "use client";
 
-import { Bot, ChevronRight, Clock3, Search, ShieldCheck } from "lucide-react";
+import {
+  Bot,
+  ChevronRight,
+  Clock3,
+  Search,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 import type { Analysis } from "@/types/analysis";
 
 interface HistoryListProps {
   investigations?: Analysis[];
   selectedId?: number;
   onSelect?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onClearAll?: () => void;
   search: string;
   onSearchChange: (value: string) => void;
   totalCount: number;
@@ -16,6 +25,8 @@ export default function HistoryList({
   investigations = [],
   selectedId,
   onSelect,
+  onDelete,
+  onClearAll,
   search,
   onSearchChange,
   totalCount,
@@ -24,8 +35,22 @@ export default function HistoryList({
     <div className="surface overflow-hidden">
       {/* Header */}
       <div className="border-b border-zinc-800 p-6">
-        <p className="label">Investigation Browser</p>
-        <h2 className="mt-2 text-2xl font-semibold">History</h2>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="label">Investigation Browser</p>
+            <h2 className="mt-2 text-2xl font-semibold">History</h2>
+          </div>
+
+          {totalCount > 0 && (
+            <button
+              onClick={onClearAll}
+              className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:border-red-500/30 hover:text-red-400"
+            >
+              <Trash2 size={13} />
+              Clear all
+            </button>
+          )}
+        </div>
 
         <div className="relative mt-5">
           <Search
@@ -67,11 +92,22 @@ export default function HistoryList({
           const gemini = item.analysis_source?.toLowerCase() === "gemini";
 
           return (
-            <button
+            <div
               key={item.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onSelect?.(item.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelect?.(item.id);
+                }
+              }}
               className={`
+                group
+                relative
                 w-full
+                cursor-pointer
                 border-b
                 border-zinc-800
                 p-5
@@ -107,12 +143,22 @@ export default function HistoryList({
                   </div>
                 </div>
 
-                <ChevronRight
-                  size={18}
-                  className="mt-1 shrink-0 text-zinc-600"
-                />
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete?.(item.id);
+                    }}
+                    aria-label="Delete investigation"
+                    className="rounded-lg p-1.5 text-zinc-700 opacity-0 transition hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+
+                  <ChevronRight size={18} className="text-zinc-600" />
+                </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
