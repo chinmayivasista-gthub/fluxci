@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -15,6 +15,10 @@ import {
 
 import api from "@/lib/api";
 import { saveJobId } from "@/lib/session";
+import {
+  ensureBackendAwake,
+  wakeBackendInBackground,
+} from "@/lib/wakeBackend";
 
 const SAMPLE_LOG = `Run npm test
 > project@1.0.0 test
@@ -44,6 +48,7 @@ Error: Process completed with exit code 1.`;
 export default function LogInput() {
   const [log, setLog] = useState("");
   const [loading, setLoading] = useState(false);
+  const [wakingUp, setWakingUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -52,6 +57,10 @@ export default function LogInput() {
 
   const characters = useMemo(() => log.length, [log]);
   const isEmpty = log.trim() === "";
+
+  useEffect(() => {
+    wakeBackendInBackground();
+  }, []);
 
   function clearLog() {
     if (loading) return;
@@ -96,6 +105,17 @@ export default function LogInput() {
     try {
       setLoading(true);
       setError(null);
+
+      const isAwake = await ensureBackendAwake(() => setWakingUp(true));
+      setWakingUp(false);
+
+      if (!isAwake) {
+        setError(
+          "The FluxCI backend didn't respond in time. It may be starting up — please try again in a moment."
+        );
+        setLoading(false);
+        return;
+      }
 
       const response = await api.post("/analyze", { log });
 
@@ -353,7 +373,11 @@ export default function LogInput() {
             {loading ? (
               <>
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/25 border-t-white" />
-                <span>Running investigation…</span>
+                <span>
+                  {wakingUp
+                    ? "Waking up the server…"
+                    : "Running investigation…"}
+                </span>
               </>
             ) : (
               <>
